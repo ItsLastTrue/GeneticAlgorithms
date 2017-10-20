@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WFA.KSAF</RootNamespace>
+    <AssemblyName>WFA.KSAF</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\..\..\Google Drive\Генетический алгоритм\V 6.10 GeneticАlgorithms Бесконечная\GeneticАlgorithms\bin\Debug\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZedGraph">
+      <HintPath>..\..\..\..\..\Google Drive\Генетический алгоритм\V 6.10 GeneticАlgorithms Бесконечная\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="ZedGraph.resources">
+      <HintPath>..\..\..\..\..\Google Drive\Генетический алгоритм\V 6.10 GeneticАlgorithms Бесконечная\zedgraph_dll_v5.1.5\ru\ZedGraph.resources.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common.cs" />
+    <Compile Include="Entities\Child.cs" />
+    <Compile Include="Entities\Individual.cs" />
+    <Compile Include="Entities\Log.cs" />
+    <Compile Include="Creators\CreatePopulation.cs" />
+    <Compile Include="Designer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Designer.Designer.cs">
+      <DependentUpon>Designer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExpressionParser\NodeChanger.cs" />
+    <Compile Include="Extensions\ConvertExt.cs" />
+    <Compile Include="Extensions\IntCounter.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAlgorithmCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAlgorithmCode.Designer.cs">
+      <DependentUpon>FormAlgorithmCode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormConvolution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormConvolution.Designer.cs">
+      <DependentUpon>FormConvolution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormErrors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormErrors.Designer.cs">
+      <DependentUpon>FormErrors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormOpenFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOpenFile.Designer.cs">
+      <DependentUpon>FormOpenFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormPhonotypeCollections.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPhonotypeCollections.Designer.cs">
+      <DependentUpon>FormPhonotypeCollections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormTests.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormTests.Designer.cs">
+      <DependentUpon>FormTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Generated\TestClass.BeforeCut.cs" />
+    <Compile Include="Generated\TestClass2.cs" />
+    <Compile Include="Helpers\DecimalConverterHlp.cs" />
+    <Compile Include="Helpers\ParityHlp.cs" />
+    <Compile Include="Interfaces\ISelection.cs" />
+    <Compile Include="NeldorMid\NeldorMidInst.cs" />
+    <Compile Include="ExpressionParser\TreeParser.cs" />
+    <Compile Include="ExpressionParser\TreeNode.cs" />
+    <Compile Include="ExpressionParser\MathTypes.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Creators\CsharpCompiler.cs" />
+    <Compile Include="Creators\RandomProvider.cs" />
+    <Compile Include="Creators\TEMP.SurvivalResults.cs" />
+    <Compile Include="Selections\MixSelection.cs" />
+    <Compile Include="Generated\TestClass.cs" />
+    <Compile Include="Generated\TestClass - Копировать %282%29.cs" />
+    <Compile Include="Generated\TestClass - Копировать.cs" />
+    <Compile Include="Generated\TestClass.BeforeLINQ.cs" />
+    <Compile Include="Forms\FormThreads.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormThreads.Designer.cs">
+      <DependentUpon>FormThreads.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Designer.resx">
+      <DependentUpon>Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAlgorithmCode.resx">
+      <DependentUpon>FormAlgorithmCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormConvolution.resx">
+      <DependentUpon>FormConvolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormErrors.resx">
+      <DependentUpon>FormErrors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormOpenFile.resx">
+      <DependentUpon>FormOpenFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPhonotypeCollections.resx">
+      <DependentUpon>FormPhonotypeCollections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormTests.resx">
+      <DependentUpon>FormTests.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Forms\FormThreads.resx">
+      <DependentUpon>FormThreads.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

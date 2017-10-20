@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFA.KSAF", "WFA KSAF\WFA.KSAF.csproj", "{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFA.KSAFTests", "WFA.KSAFTests\WFA.KSAFTests.csproj", "{7F20E855-49AE-4DE6-AA77-50E3CB316B04}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2396B286-9C0B-4643-A2D0-BF89CA1CB5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F20E855-49AE-4DE6-AA77-50E3CB316B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F20E855-49AE-4DE6-AA77-50E3CB316B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F20E855-49AE-4DE6-AA77-50E3CB316B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F20E855-49AE-4DE6-AA77-50E3CB316B04}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A6D9E66-C730-41BD-BBD6-D2D634C89A50}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://gls-vsb-shp3ims:8080/tfs/roingarchived
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = WFA\u0020KSAF\\WFA.KSAF.csproj
+		SccProjectName1 = WFA\u0020KSAF
+		SccLocalPath1 = WFA\u0020KSAF
+		SccProjectUniqueName2 = WFA.KSAFTests\\WFA.KSAFTests.csproj
+		SccProjectName2 = WFA.KSAFTests
+		SccLocalPath2 = WFA.KSAFTests
+	EndGlobalSection
+EndGlobal
