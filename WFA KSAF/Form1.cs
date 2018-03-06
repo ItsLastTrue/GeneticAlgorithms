@@ -20,7 +20,8 @@ namespace WFA.KSAF
     {
         #region Общие функции и форма                           ***********************************************************************************************************************************************
         public CreatePopulation PopulationCreator;
-        
+           
+
         private readonly FormOpenFile FormOpenFile;
         private readonly FormConvolution FormConvolution;
         private readonly FormErrors FormErrors;
