@@ -49,6 +49,28 @@ namespace WFA.KSAF.Extensions
         public static string ToStrRound(this double number, int capacity = 3) =>
             Math.Round(number, capacity).ToString(CultureInfo.InvariantCulture).Replace(',', '.');
 
+        public static double ToDblSlow(this object x)
+        {
+            double temp;
+            try
+            {
+                temp = Convert.ToDouble(x);
+            }
+            catch
+            {
+                try
+                {
+                    temp = Convert.ToDouble(x.ToString().Replace(",", "."));
+                }
+                catch
+                {
+                    temp = Convert.ToDouble(x.ToString().Replace(".", ","));
+                }
+            }
+            return temp;
+        }
+
+
         //public static double ToDbl(this object x)
         //{
         //    var temp = 0.0;

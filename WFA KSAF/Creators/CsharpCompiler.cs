@@ -1,6 +1,7 @@
 ﻿using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
 
@@ -13,7 +14,7 @@ namespace WFA.KSAF.Creators
 
         public CsharpCompiler()
         {
-            var options = new Dictionary<string, string> { { "CompilerVersion", "v4.5" } };
+            //var options = new Dictionary<string, string> { { "CompilerVersion", "v4.5" } };
             _compileProvider = new CSharpCodeProvider();//options);
             _compilerParameters = new CompilerParameters
             {
@@ -31,7 +32,7 @@ namespace WFA.KSAF.Creators
         public CompilerResults Compile(string code) =>
             _compileProvider.CompileAssemblyFromSource(_compilerParameters, code);
 
-        private List<string> References
+        private static List<string> References
         {
             get
             {
@@ -39,12 +40,9 @@ namespace WFA.KSAF.Creators
                 string exeDir = Path.GetDirectoryName(exePath);
 
                 AssemblyName[] assemRefs = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-                List<string> references = new List<string>();
+                List<string> references = assemRefs.Select(e => e.Name + ".dll").ToList();
 
-                foreach (AssemblyName assemblyName in assemRefs)
-                    references.Add(assemblyName.Name + ".dll");
-
-                for (int i = 0; i < references.Count; i++)
+                for (var i = 0; i < references.Count; i++)
                 {
                     string localName = Path.Combine(exeDir, references[i]);
 
@@ -56,6 +54,5 @@ namespace WFA.KSAF.Creators
                 return references;
             }
         }
-
     }
 }

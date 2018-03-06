@@ -308,7 +308,7 @@ namespace WFA.KSAF.ExpressionParser
                     else
                     {
                         _dicOfLeafs.Add(_leafCounter.Inc(), node.Node);
-                        node.Node = "Leaf[" + _leafCounter.ToInt() + "]";
+                        node.Node = "Leaf[" + _leafCounter.Val + "]";
                     }
                 if (node.IsHaveChild)
                     RecurceChangeToLeaf(node.Child);
@@ -447,7 +447,7 @@ namespace WFA.KSAF.ExpressionParser
                         //Поднимаем древо удаляя два использованых узла: firstNode as аргумент и oldParentNode as мат операция. 
                         //Они включаются в константу (где-то в глубине древа) и эта линия исчезает как в тетрисе, поднимая secondNode на одну ступень вверх.
                         //Позиция secondNode приравнивается к позиции вырезанного oldParentNode
-                        changer.SwapRefs(changer.FirstNodeParent, changer.SecondNode);
+                        changer.SwapRefs(changer.SecondNode, changer.FirstNodeParent);
                         //changer.SecondNode.ParentNode = changer.FirstNodeParent.ParentNode;
                         //changer.SecondNode.Position = changer.FirstNodeParent.Position;
                         //changer.FirstNodeParent.ReplaceBy(changer.SecondNode);
@@ -586,16 +586,19 @@ namespace WFA.KSAF.ExpressionParser
         public double Estimate(IReadOnlyList<IReadOnlyList<double>> argumentList, IReadOnlyList<double> constants)
         {
             //SetConstants(constants);
+            var i = MathTree[0].GetLastID();
             Simplification();
+            
             var deviate = 0.0;
+            var reparse = ReparseTree();
             foreach (IReadOnlyList<double> arguments in argumentList)
             {
                 RecurseCopy(arguments);
                 Simplification();
-                if (_toEstimateTree[0].Child[0].Value == null)
+                if (_toEstimateTree[0].Child[0].Child[0].Value == null)
                     throw new Exception("Error 13291910. Не удалось вычислить значение.");
 
-                deviate += Math.Abs(arguments.Last() - (double)_toEstimateTree[0].Child[0].Value);
+                deviate += Math.Abs(arguments.Last() - (double)_toEstimateTree[0].Child[0].Child[0].Value);
             }
             _toEstimateTree = null;
             return deviate;

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
-using WFA.KSAF;
+using System.Windows.Forms;
+using WFA.KSAF.Extensions;
 using ZedGraph;
 
 namespace WFA.KSAF
@@ -111,7 +111,7 @@ namespace WFA.KSAF
                     for (int i = 0; i < descriptionCount; i++)
                     {
                         if (parts[i] != Filename.Null)
-                            tempIcoming[i] = MainForm.ConvertToDouble(parts[i]);
+                            tempIcoming[i] = parts[i].ToDblSlow();
                         else
                             tempIcoming[i] = double.NaN;
                         dataGridView1[i, RowsCount].Value = tempIcoming[i];
@@ -167,15 +167,15 @@ namespace WFA.KSAF
             for (int i = 0; i < tempPointPair.Count; i++)
             {
                 string[] parts = lasString.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                if (tempPointPair[i].Y > MainForm.ConvertToDouble(parts[0]))
+                if (tempPointPair[i].Y > parts[0].ToDblSlow())
                 {
                     CollectionsPointPairList[CollectionsPointPairList.Count - 1].Add(tempPointPair[i].X, tempPointPair[i].Y);
                     dataGridView1[dataGridView1.ColumnCount - 1, i].Value = tempPointPair[i].X;
                 }
                 else
                 {
-                    CollectionsPointPairList[CollectionsPointPairList.Count - 1].Add(MainForm.ConvertToDouble(parts[1]), MainForm.ConvertToDouble(parts[0]));
-                    dataGridView1[dataGridView1.ColumnCount - 1, i].Value = MainForm.ConvertToDouble(parts[1]);
+                    CollectionsPointPairList[CollectionsPointPairList.Count - 1].Add(parts[1].ToDblSlow(), parts[0].ToDblSlow());
+                    dataGridView1[dataGridView1.ColumnCount - 1, i].Value = parts[1].ToDblSlow();
                     try
                     {
                         lasString = InStream.ReadLine();
@@ -296,7 +296,7 @@ namespace WFA.KSAF
                 }
                 MainForm.IncomingParameters.Add(dataGridView1[0, i].Value + " " + dataGridView1[y, i].Value);
                 MainForm.richTextBoxIncoming.Text += dataGridView1[0, i].Value + " " + dataGridView1[y, i].Value + enter;
-                list.Add(MainForm.ConvertToDouble(dataGridView1[y, i].Value), MainForm.ConvertToDouble(dataGridView1[0, i].Value));
+                list.Add((dataGridView1[y, i].Value).ToDblSlow(),(dataGridView1[0, i].Value).ToDblSlow());
             }
             MainForm.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue);
         }
@@ -329,7 +329,7 @@ namespace WFA.KSAF
                 }
                 MainForm.IncomingParameters.Add(dataGridView2[0, i].Value + " " + dataGridView2[1, i].Value + " " + dataGridView2[2, i].Value);
                 MainForm.richTextBoxIncoming.Text += dataGridView2[0, i].Value + " " + dataGridView2[1, i].Value + " " + dataGridView2[2, i].Value + enter;
-                list.Add(MainForm.ConvertToDouble(dataGridView2[2, i].Value), MainForm.ConvertToDouble(dataGridView2[0, i].Value));
+                list.Add(dataGridView2[2, i].Value.ToDblSlow(), dataGridView2[0, i].Value.ToDblSlow());
             }
             MainForm.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue);
             label1.Visible = false;
@@ -368,8 +368,8 @@ namespace WFA.KSAF
                     }
                     bool dataNotEof = true;
                     int j = 0;
-                    if (MainForm.ConvertToDouble(dataGridView2[0, i].Value) != MainForm.ConvertToDouble(dataGridView1[0, j].Value)) j = 0;
-                    while (dataNotEof && (MainForm.ConvertToDouble(dataGridView2[0, i].Value) != MainForm.ConvertToDouble(dataGridView1[0, j].Value)))
+                    if (dataGridView2[0, i].Value.ToDblSlow() != dataGridView1[0, j].Value.ToDblSlow()) j = 0;
+                    while (dataNotEof && (dataGridView2[0, i].Value.ToDblSlow() != dataGridView1[0, j].Value.ToDblSlow()))
                     {
                         j++;
                         if (j == dataGridView1.Rows.Count) dataNotEof = false;

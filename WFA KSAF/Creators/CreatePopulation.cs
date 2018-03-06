@@ -4,10 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using WFA.KSAF.Entities;
-using WFA.KSAF.ExpressionParser;
 using WFA.KSAF.Extensions;
 using WFA.KSAF.Interfaces;
-using WFA.KSAF.NeldorMid;
+using WFA.KSAF.Optimization;
 using WFA.KSAF.Selections;
 
 namespace WFA.KSAF.Creators
@@ -205,12 +204,11 @@ namespace WFA.KSAF.Generated
             //WriTeToFile(code);
             if (results.Errors.HasErrors)
             {
-                if (errCount.ToInt() == 10) return;
+                if (errCount.Val == 10) return;
 
                 string err = results.Errors.Cast<object>().Aggregate(string.Empty, (current, e) => current + e + "\r\n");
 
                 Log.CompileErrors.Add(new CompileError {Iteration = iterations, Code = Code, ErrorText = err});
-                //_mainForm.ошибкиToolStripMenuItem.Text = "Ошибки (" + ErorrsList.Count + ")";
                 errCount.Inc();
                 goto RestartIfErr;
             }

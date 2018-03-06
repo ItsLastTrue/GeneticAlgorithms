@@ -97,6 +97,7 @@
     <Compile Include="Designer.Designer.cs">
       <DependentUpon>Designer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\OptimizationResults.cs" />
     <Compile Include="ExpressionParser\NodeChanger.cs" />
     <Compile Include="Extensions\ConvertExt.cs" />
     <Compile Include="Extensions\IntCounter.cs" />
@@ -147,7 +148,8 @@
     <Compile Include="Helpers\DecimalConverterHlp.cs" />
     <Compile Include="Helpers\ParityHlp.cs" />
     <Compile Include="Interfaces\ISelection.cs" />
-    <Compile Include="NeldorMid\NeldorMidInst.cs" />
+    <Compile Include="Optimization\SurvivalTester.cs" />
+    <Compile Include="Optimization\NeldorMid.cs" />
     <Compile Include="ExpressionParser\TreeParser.cs" />
     <Compile Include="ExpressionParser\TreeNode.cs" />
     <Compile Include="ExpressionParser\MathTypes.cs" />
@@ -235,7 +237,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TFS\Roing\CommonProjects\CL\CL.Extensions\CL.Extensions.csproj">
+      <Project>{DFD1DF41-9ABB-4B47-A1B4-EDE98ECCC74D}</Project>
+      <Name>CL.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

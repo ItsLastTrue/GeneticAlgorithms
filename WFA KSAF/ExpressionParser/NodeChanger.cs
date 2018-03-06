@@ -15,20 +15,24 @@ namespace WFA.KSAF.ExpressionParser
         /// </summary>
         public readonly TreeNode FirstNode;
 
+        private TreeNode _secondNode;
         /// <summary>
-        /// Второй узлов если на данном уровне их несколько.
+        /// Второй узел если на данном уровне их несколько.
         /// </summary>
-        public TreeNode SecondNode => FirstNodeParent.Child[1];
+        public TreeNode SecondNode => _secondNode ?? (_secondNode = FirstNodeParent.Child[1]);
 
+        private TreeNode _firstNodeParent;
         /// <summary>
         /// Узел который будет уничтожен по результатам сокращения (родитель firsNode).
         /// </summary>
-        public TreeNode FirstNodeParent => FirstNode.ParentNode;
+        public TreeNode FirstNodeParent => _firstNodeParent ?? (_firstNodeParent = FirstNode.ParentNode);
 
+
+        private TreeNode _firstNodeGrandParent;
         /// <summary>
         /// Узел который должен получить нового ребенка взамен того что будет сокращен.
         /// </summary>
-        public TreeNode FirstNodeGrandParent => FirstNodeParent.ParentNode;
+        public TreeNode FirstNodeGrandParent => _firstNodeGrandParent ?? (_firstNodeGrandParent = FirstNodeParent.ParentNode);
         
         /// <summary>
         /// Результат сокращения узлов.
@@ -40,16 +44,24 @@ namespace WFA.KSAF.ExpressionParser
         /// </summary>
         public TreeNode FindedConst;
 
+        private TreeNode _findedConstParent;
         /// <summary>
         /// Новый родитель у которого будет заменена константа на вновь вычисленную
         /// </summary>
-        public TreeNode FindedConstParent => FindedConst.ParentNode;
+        public TreeNode FindedConstParent => _findedConstParent ?? (_findedConstParent = FindedConst.ParentNode);
 
         public void SwapRefs(TreeNode source, TreeNode desination)
         {
+            //Считываем позицию узла который будем подменять.
             source.Position = desination.Position;
+            //Считываем родителя нода, который будем заменять.
             source.ParentNode = desination.ParentNode;
-            desination.ReplaceBy(source);
+
+            //Заменяем у родителя старого ребенка на нового.
+            desination.ParentNode.Child[desination.Position] = source;
+            //[через раз работает хуетя]Подменяем узел новым узлом (ссылки из вне на данный старый узел 
+            //сохраняются, но значения в нем из нового узла).
+            //desination.ReplaceBy(source);
         }
     }
 }

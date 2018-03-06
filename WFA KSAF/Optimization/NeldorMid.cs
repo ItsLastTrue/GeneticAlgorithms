@@ -1,97 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
+using CL.Extensions;
 using WFA.KSAF.Entities;
 
-namespace WFA.KSAF.NeldorMid
+namespace WFA.KSAF.Optimization
 {
-    internal struct NeldorMidResult
-    {
-        public int RestartCounts;
-        public double[] BestLeafs;
-    }
-
-    public sealed class SurvivalTester
-    {
-        public int BestGenotypeNumber;
-        public List<double> Points;
-
-        private readonly Individual[] _individual;
-        private readonly int _popSize;
-
-        public SurvivalTester(Individual[] individual, int populationSize)
-        {
-            _individual = individual;
-            _popSize = populationSize;
-        }
-
-        public void CollectFitnessFunctions(Assembly assembly, int maxIterationsNm)
-        {
-            object evaluator = assembly.CreateInstance("WFA.KSAF.Generated.Estimator");
-            var tasks = new Task[_popSize];
-            var results = new NeldorMidResult[_popSize];
-            //const int copyToRun = 2;
-
-            for (var s = 0; s < _popSize; s++) //s = s + copyToRun)
-            {
-                int s1 = s;
-                tasks[s] = Task.Run(() => results[s1] = new NeldorMidInst(evaluator, _individual[s1].LeafsCount).Run(s1, maxIterationsNm));
-            }
-
-            Task.WaitAll(tasks);
-
-            var bestDeviate = double.MaxValue;
-
-            for (var s = 0; s < _popSize; s++)
-            {
-                double dev = results[s].BestLeafs[_individual[s].LeafsCount];
-                _individual[s].SurvivalRate.Deviations = dev;
-
-                if (dev < bestDeviate)
-                {
-                    bestDeviate = dev;
-                    BestGenotypeNumber = s;
-                }
-                _individual[s].SurvivalRate.Constants = results[s].BestLeafs;
-                _individual[s].SurvivalRate.NelMidRestarts = results[s].RestartCounts;
-            }
-
-            FillFunctionPoints(evaluator, _individual[BestGenotypeNumber].SurvivalRate.Constants, BestGenotypeNumber);
-            //CollectBestGraphPoints(Out_Constants[Result_BestGenotype], Result_BestGenotype);
-        }
-
-        //private void RecurseFilter()
-        //{
-        //    var nl = new NeldorMidThreads();
-        //    var best_Deviate = Math.Pow(10, 300);
-        //    for (int s = 0; s < 200; s++)
-        //    {
-        //        for (int i = 0; i < 10; i++) RecFiltr[i] = 0;
-        //        nl.NeldorMid(this, s);
-        //        var _dev = BestLeafs[s][CnstInG[s]];
-        //        Out_Deviations.Add(_dev);
-        //        if (_dev < best_Deviate)
-        //        {
-        //            best_Deviate = _dev;
-        //            Result_BestGenotype = s;
-        //
-        //        }
-        //        Out_Constants.Add(BestLeafs[s]);
-        //
-        //    }
-        //    CollectBestGraphPoints(Out_Constants[Result_BestGenotype], Result_BestGenotype);
-        //
-        //}
-
-        private void FillFunctionPoints(object evaluatorInstance, double[] leafs, int genotypeIndex)
-        {
-            Type evaluatorType = evaluatorInstance.GetType();
-            Points = (List<double>) evaluatorType.InvokeMember("GetFunctionPoints", BindingFlags.InvokeMethod, null, evaluatorInstance, new object[] {leafs, genotypeIndex});
-        }
-    }
-
-    internal sealed class NeldorMidInst
+    internal sealed class NeldorMid
     {
         private readonly object _evaluatorInstance;
         private readonly Random _rnd = new Random();
@@ -106,7 +21,7 @@ namespace WFA.KSAF.NeldorMid
         /// </summary>
         private readonly int _nMer;
 
-        public NeldorMidInst(object evaluatorInstance, int nMer)
+        public NeldorMid(object evaluatorInstance, int nMer)
         {
             _evaluatorInstance = evaluatorInstance
                                  ?? throw new Exception("Error 9451610. Исполнительный файл для подсчета отклонений не найден.");
@@ -114,10 +29,10 @@ namespace WFA.KSAF.NeldorMid
         }
 
         //NELDOR MID
-        public NeldorMidResult Run(int genotypenumber, int maxIterationsNm)
+        public OptimizationResults Run(int genotypenumber, int maxIterationsNm)
         {
             if (_nMer == 0)
-                return new NeldorMidResult { RestartCounts = 0, BestLeafs = new[] { DeviationCollections(new[] { 0.0 }, genotypenumber) } };
+                return new OptimizationResults { RestartCounts = 0, BestLeafs = new[] { DeviationCollections(new[] { 0.0 }, genotypenumber) } };
 
             var iteration = 0;
             var bestLeafs = new double[_nMer + 1];
@@ -125,13 +40,13 @@ namespace WFA.KSAF.NeldorMid
 
 
             //коэффицент отражения";
-            double A_Mirror = 1;
+            const double A_Mirror = 1;
 
             // коэффицент сжатия";
-            double B_Сompression = 0.5;
+            const double B_Сompression = 0.5;
 
             //коэффицент растяжения";
-            double G_Tensile = 2;
+            const double G_Tensile = 2;
 
             //Центр тяжесть Xo";
             double[] gravityCentr = new double[_nMer];
@@ -251,13 +166,16 @@ namespace WFA.KSAF.NeldorMid
             }
             else
             {
-                DivideSimplex(simplexVertices);
+                DivideSimplex(ref simplexVertices);
                 SortDouble(simplexVertices, 0, _nMer);
                 if (CheckСonvergence(simplexVertices) > targetConvergence) goto Start;
                 else goto End;
             }
-            End: double[] checkDeviation = GetGravityCentr(simplexVertices, _nMer - 1, genotypenumber);
-            if (bestLeafs[_nMer] == 0.0)
+
+            End:
+            double[] checkDeviation = GetGravityCentr(simplexVertices, _nMer - 1, genotypenumber);
+
+            if (bestLeafs[_nMer].IsLessThanEpsilon())
                 checkDeviation.CopyTo(bestLeafs, 0);
 
             if (checkDeviation[_nMer] > _targetDeviation && iteration != maxIterationsNm)
@@ -269,7 +187,7 @@ namespace WFA.KSAF.NeldorMid
                 goto ReStart;
 
             }
-            return new NeldorMidResult { RestartCounts = restartCount, BestLeafs = bestLeafs };
+            return new OptimizationResults { RestartCounts = restartCount, BestLeafs = bestLeafs };
         }
 
         /// <summary>
@@ -316,7 +234,7 @@ namespace WFA.KSAF.NeldorMid
             for (var i = 0; i <= vercticesCount; i++)
             {
                 double[] tempSimplexVertice = array[i];
-                for (int j = 0; j < _nMer; j++)
+                for (var j = 0; j < _nMer; j++)
                     tempCent[j] += tempSimplexVertice[j] / _nMer;
             }
             tempCent[_nMer] = DeviationCollections(tempCent, genotypenumber);
@@ -351,10 +269,10 @@ namespace WFA.KSAF.NeldorMid
         {
             var averageСonvergence = 0.0;
             double[] tempMinVert = simplexVertices[0];
-            for (int i = 1; i <= _nMer; i++)
+            for (var i = 1; i <= _nMer; i++)
             {
                 double[] tempVert = simplexVertices[i];
-                for (int n = 0; n < _nMer; n++)
+                for (var n = 0; n < _nMer; n++)
                     averageСonvergence += Math.Abs(tempMinVert[n] - tempVert[n]);
             }
             averageСonvergence = averageСonvergence / Convert.ToDouble(_nMer);
@@ -366,7 +284,7 @@ namespace WFA.KSAF.NeldorMid
         /// </summary>
         /// <param name="simplexVertices"></param>
         /// <returns></returns>
-        private List<double[]> DivideSimplex(List<double[]> simplexVertices)
+        private void DivideSimplex(ref List<double[]> simplexVertices)
         {
             double[] tempMinVert = simplexVertices[0];
             for (var i = 1; i <= _nMer; i++)
@@ -375,7 +293,6 @@ namespace WFA.KSAF.NeldorMid
                 for (var j = 0; j < _nMer; j++)
                     tempVert[j] = (tempVert[j] + tempMinVert[j]) / 2;
             }
-            return simplexVertices;
         }
 
         /// <summary>
@@ -384,7 +301,7 @@ namespace WFA.KSAF.NeldorMid
         /// <param name="array"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        void SortDouble(List<double[]> array, int start, int end)
+        private void SortDouble(List<double[]> array, int start, int end)
         {
             if (start >= end)
                 return;

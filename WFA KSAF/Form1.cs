@@ -7,27 +7,46 @@ using System.Linq;
 using System.CodeDom.Compiler;
 using System.Globalization;
 using System.Reflection;
-using WFA.KSAF.Extensions;
+using CL.Extensions;
 using WFA.KSAF.Forms;
 using WFA.KSAF.Creators;
 using WFA.KSAF.Generated;
 using WFA.KSAF.Helpers;
+using ConvertExt = WFA.KSAF.Extensions.ConvertExt;
 
 namespace WFA.KSAF
 {
     public partial class Form1 : Form
     {
         #region Общие функции и форма                           ***********************************************************************************************************************************************
-        public CreatePopulation NewClass;
+        public CreatePopulation PopulationCreator;
         
-        FormOpenFile FormOpenFile;
-        FormConvolution FormConvolution;
-        FormErrors FormErrors;
+        private readonly FormOpenFile FormOpenFile;
+        private readonly FormConvolution FormConvolution;
+        private readonly FormErrors FormErrors;
+        private readonly DialogForm DialogBog;
+        private readonly Designer FormDesigner = new Designer();
+        private readonly FormAlgorithmCode FormAlgorithmCode = new FormAlgorithmCode();
+        private readonly FormPhonotypeCollections FormPhonotypeCollections = new FormPhonotypeCollections();
 
-        DialogForm DialogBog;
-        Designer FormDesigner = new Designer();
-        FormAlgorithmCode FormAlgorithmCode = new FormAlgorithmCode();
-        FormPhonotypeCollections FormPhonotypeCollections = new FormPhonotypeCollections();
+        /// <summary>
+        /// Набор исходных точек и значений в них.
+        /// </summary>
+        public double[,] Arguments;
+        /// <summary>
+        /// Количество переменных x,y,z,...
+        /// </summary>
+        public int ArgumentsRows;
+
+        /// <summary>
+        /// Количество точек {[1,3],[3,3],...}.
+        /// </summary>
+        public int ArgumentsCount;
+
+        /// <summary>
+        /// Равен нулю если первый столбец в исх точках уже содержит данные ИЛИ равен 1 если 1 столбец - глубина (а второй уже функция).
+        /// </summary>
+        private int _deptincrement;
 
         public Form1()
         {
@@ -38,39 +57,23 @@ namespace WFA.KSAF
             FormErrors = new FormErrors(this);
             DialogBog = new DialogForm(this);
         }
-        void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
             ZedGraphResult.GraphPane.Title.IsVisible = false;
             zedGraphIterations.GraphPane.Title.IsVisible = false;
         }
+
         public void ClearNullStr(RichTextBox rtb)
         {
             while (rtb.Lines[rtb.Lines.Length - 1].Replace(" ", "") == "") DelLine(rtb, rtb.Lines.Length - 1);
         }
-        void DelLine(RichTextBox rtb, int index)
-        {
+
+        private void DelLine(RichTextBox rtb, int index) =>
             rtb.Text = rtb.Text.Remove(rtb.GetFirstCharIndexFromLine(index) - 1, rtb.Lines[index].Length + 1);
-        }
-        public double ConvertToDouble(object x)
-        {
-            double temp;
-            try
-            {
-                temp = Convert.ToDouble(x);
-            }
-            catch
-            {
-                try
-                {
-                    temp = Convert.ToDouble(x.ToString().Replace(",", "."));
-                }
-                catch
-                {
-                    temp = Convert.ToDouble(x.ToString().Replace(".", ","));
-                }
-            }
-            return temp;
-        }
+
+        private void checkBoxHaveDept_CheckedChanged(object sender, EventArgs e) =>
+            _deptincrement = checkBoxHaveDept.Checked ? 1 : 0;
+
         #endregion
         #region Графы и рисование                               ***********************************************************************************************************************************************
         public Color GetRandColor()
@@ -196,30 +199,21 @@ namespace WFA.KSAF
         }
         #endregion
         #region Прогрузка данных                                ***********************************************************************************************************************************************
-        public double[,] Arguments;
-        public int ArgumentsRows;
-        public int ArgumentsCount;
-        int HaveDept = 0;
-        private void checkBoxHaveDept_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxHaveDept.Checked) HaveDept = 1;
-            else HaveDept = 0;
-        }
         public void Reader()
         {
             ClearNullStr(richTextBoxIncoming);
 
-            ArgumentsRows = richTextBoxIncoming.Lines[0].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length - 1 - HaveDept;
+            ArgumentsRows = richTextBoxIncoming.Lines[0].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length - 1 - _deptincrement;
             ArgumentsCount = richTextBoxIncoming.Lines.Length;
 
             Arguments = new double[ArgumentsRows + 1, ArgumentsCount];
-            for (int i = 0; i < richTextBoxIncoming.Lines.Length; i++)
+            for (var i = 0; i < richTextBoxIncoming.Lines.Length; i++)
             {
                 string[] parts = richTextBoxIncoming.Lines[i].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                for (int n = 0; n <= ArgumentsRows; n++)
+                for (var n = 0; n <= ArgumentsRows; n++)
                 {
-                    Arguments[n, i] = parts[n + HaveDept].ToDbl();
-                };
+                    Arguments[n, i] = ConvertExt.ToDbl(parts[n + _deptincrement]);
+                }
             }
         }
         #endregion
@@ -227,21 +221,22 @@ namespace WFA.KSAF
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
             richTextBoxIncoming.Text = "";
-            PointPairList list = new PointPairList();
+            var list = new PointPairList();
 
-            var start = textBox2.Text.ToDbl();
-            var finish= textBox3.Text.ToDbl();
-            var step =  textBox4.Text.ToDbl();
+            double start = ConvertExt.ToDbl(textBox2.Text);
+            double finish= ConvertExt.ToDbl(textBox3.Text);
+            double step =  ConvertExt.ToDbl(textBox4.Text);
             double[,] temp2 = Evaluator(TextBoxIdeal.Text, start, finish, step);
-            for (int i = 0; i < temp2.GetLength(1); i++)
+            for (var i = 0; i < temp2.GetLength(1); i++)
             {
                 list.Add(temp2[1, i], temp2[0, i]);
-                richTextBoxIncoming.Text += temp2[0, i] + "\t" + temp2[1, i] + "\r\n";
+                richTextBoxIncoming.Text += temp2[0, i] + @"\t" + temp2[1, i] + @"\r\n";
             }
             DrawGraph(ZedGraphResult, "Сгенерированная", list, Color.Green);
         }
+
         public double[,] Evaluator(string expression, double start, double finish, double step)
-        {            
+        {
             CompilerParameters CC_Params;
             CodeDomProvider CompileProvider;
             CompileProvider = CodeDomProvider.CreateProvider("CSharp");
@@ -257,7 +252,7 @@ namespace WFA.KSAF
             };
             CC_Params.ReferencedAssemblies.Add("system.dll");
 
-            int n = 0;
+            var n = 0;
             string code = string.Empty;
             code += "using System;";
             code += "namespace CSEvaluator";
@@ -270,7 +265,7 @@ namespace WFA.KSAF
             for (double i = start; i >= finish; i = i - step)
             {
                 n++;
-                code += "               EvaluatorXY[0," + (n - 1) + "] = " + Math.Round(i, 4).ToString().Replace(',', '.') + ";";
+                code += "               EvaluatorXY[0," + (n - 1) + "] = " + Math.Round(i, 4).ToString(CultureInfo.InvariantCulture) + ";";
             }
             code += "       }";
 
@@ -321,9 +316,12 @@ namespace WFA.KSAF
             var results = CompileProvider.CompileAssemblyFromSource(CC_Params, code);
             var assembly = results.CompiledAssembly;
             var evaluator = assembly.CreateInstance("CSEvaluator.Evaluate");
-            double[,] temp = ((double[,])evaluator.GetType().InvokeMember("GetResultEvaluatorXY", BindingFlags.InvokeMethod, null, evaluator, new object[] { }, null, null, null));
+            if (evaluator is null)
+                throw new Exception("Erorr 16420203. Не удалось собрать компилятор.");
 
-            return temp;
+            var result = (double[,])evaluator.GetType().InvokeMember("GetResultEvaluatorXY", BindingFlags.InvokeMethod, null, evaluator, new object[] { }, null, null, null);
+
+            return result;
         }
         #endregion
         #region ToolStripMenu                                   ***********************************************************************************************************************************************
@@ -388,10 +386,10 @@ namespace WFA.KSAF
             for (int i = 0; i < IncomingParameters.Count; i++)
             {
                 string[] parts = IncomingParameters[i].Split(new [] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                var dept = parts[0].ToDbl();
-                if (dept <= textBox2.Text.ToDbl() & dept >= textBox3.Text.ToDbl())
+                var dept = ConvertExt.ToDbl(parts[0]);
+                if (dept <= ConvertExt.ToDbl(textBox2.Text) & dept >= ConvertExt.ToDbl(textBox3.Text))
                 {
-                    if (dept != textBox3.Text.ToDbl()) richTextBoxIncoming.Text += IncomingParameters[i] + "\r\n";
+                    if (dept != ConvertExt.ToDbl(textBox3.Text)) richTextBoxIncoming.Text += IncomingParameters[i] + "\r\n";
                     else richTextBoxIncoming.Text += IncomingParameters[i];
                 }
             }
@@ -412,7 +410,7 @@ namespace WFA.KSAF
             for (int i = 0; i < richTextBoxIncoming.Lines.Length; i++)
             {
                 string[] parts = richTextBoxIncoming.Lines[i].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                ZedGraphResult.GraphPane.CurveList["Исходная"].AddPoint(parts[Fx_index - 1].ToDbl(), parts[0].ToDbl());
+                ZedGraphResult.GraphPane.CurveList["Исходная"].AddPoint(ConvertExt.ToDbl(parts[Fx_index - 1]), ConvertExt.ToDbl(parts[0]));
             }
             ZedGraphResult.AxisChange();
             ZedGraphResult.Invalidate();
@@ -454,7 +452,7 @@ namespace WFA.KSAF
         private int Iteration;
         private double MaxDespers;
         private double BestFunc_Diviate;
-        //int BestFunc_GenNum;
+
         private Random rnd = new Random();
         private void SelectionRulet()
         {
@@ -464,7 +462,6 @@ namespace WFA.KSAF
 
             textBoxPopulationSize.Text = popsize.ToString();
             BestFunc_Diviate = Math.Pow(10, 300);
-            //BestFunc_GenNum = 0;
             Iteration = 0;
             IsSelectionContinues = true;
             StartTime = DateTime.Now;
@@ -480,8 +477,8 @@ namespace WFA.KSAF
                 arrList.Add(line);
             }
 
-            NewClass = new CreatePopulation(arrList, popsize, checkBoxConvolution.Checked);
-            MaxDespers = textBoxDesp.Text.ToDbl();
+            PopulationCreator = new CreatePopulation(arrList, popsize, checkBoxConvolution.Checked);
+            MaxDespers = ConvertExt.ToDbl(textBoxDesp.Text);
             RuletIterationsLoop();
         }
 
@@ -496,10 +493,10 @@ namespace WFA.KSAF
         
         public void RuletIterationsLoop()
         {
-            NewClass.MaxNelrodMidIterations = 300;
-            NewClass.MutationChance = Convert.ToInt32(textBoxMutationChance.Text);
-            NewClass.GrowSpeed = Convert.ToInt32(textBox1GrowSpeed.Text);
-            NewClass.MaxConstantsCount = Convert.ToInt16(textBoxLeafsCount.Text);
+            PopulationCreator.MaxNelrodMidIterations = 300;
+            PopulationCreator.MutationChance = Convert.ToInt32(textBoxMutationChance.Text);
+            PopulationCreator.GrowSpeed = Convert.ToInt32(textBox1GrowSpeed.Text);
+            PopulationCreator.MaxConstantsCount = Convert.ToInt16(textBoxLeafsCount.Text);
 
             var isNewGenotypeIsBetter = false;
             var f_x = string.Empty;
@@ -508,22 +505,22 @@ namespace WFA.KSAF
                 textBoxDesp.Text = BestFunc_Diviate.ToString(CultureInfo.InvariantCulture);
 
             int populationSize = Convert.ToInt32(textBoxPopulationSize.Text);
-            while (BestFunc_Diviate >= textBoxDesp.Text.ToDbl() & IsSelectionContinues)
+            while (BestFunc_Diviate >= ConvertExt.ToDbl(textBoxDesp.Text) & IsSelectionContinues)
             {
-                MaxDespers = textBoxDesp.Text.ToDbl();
+                MaxDespers = ConvertExt.ToDbl(textBoxDesp.Text);
                 StartTime = DateTime.Now;
                 var iterationsPhonotypeCollections = "";
-                NewClass.PopulationCompiler(MaxDespers, Iteration);
+                PopulationCreator.PopulationCompiler(MaxDespers, Iteration);
                 Iteration += 1;
 
-                double iterToBreak = textBoxIterationsCount.Text.ToDbl();
+                double iterToBreak = ConvertExt.ToDbl(textBoxIterationsCount.Text);
                 var progressBar = (int)Math.Round(100 * (Iteration / iterToBreak - Math.Truncate(Iteration / iterToBreak)));
                 if (progressBar == 0) progressBar = 100;
                 progressBar1.Value = progressBar;
 
                 //                                     Замораживаем старую или новая функция лучше и используем ее
-                var newBestGenotype = NewClass.BestGenotype;
-                var newBestDeviate = NewClass.Individual[newBestGenotype].SurvivalRate.Deviations;
+                var newBestGenotype = PopulationCreator.BestGenotype;
+                var newBestDeviate = PopulationCreator.Individual[newBestGenotype].SurvivalRate.Deviations;
 
                 if (BestFunc_Diviate >= newBestDeviate)
                 {
@@ -535,14 +532,14 @@ namespace WFA.KSAF
                 //------------------------------------Замораживаем старую или новая функция лучше и используем ее
                 for (var i = 0; i < populationSize; i++)
                 {                    
-                    iterationsPhonotypeCollections += i + " - Кв. отклонение: " + NewClass.Individual[i].SurvivalRate.Deviations + "\r\n";
-                    string leafsJoin = string.Join("; ", NewClass.Individual[i].SurvivalRate.Constants.Select(dbl => dbl.ToString(CultureInfo.InvariantCulture)).ToArray());
+                    iterationsPhonotypeCollections += i + " - Кв. отклонение: " + PopulationCreator.Individual[i].SurvivalRate.Deviations + "\r\n";
+                    string leafsJoin = string.Join("; ", PopulationCreator.Individual[i].SurvivalRate.Constants.Select(dbl => dbl.ToString(CultureInfo.InvariantCulture)).ToArray());
                     iterationsPhonotypeCollections += i + " - Постоянные: " + leafsJoin + "\r\n";
-                    iterationsPhonotypeCollections += i + " - Генотип: " + NewClass.Individual[i].Genotype + "\r\n";
-                    iterationsPhonotypeCollections += i + " - Рестартов Н-М: " + NewClass.Individual[i].SurvivalRate.NelMidRestarts + "\r\n";
+                    iterationsPhonotypeCollections += i + " - Генотип: " + PopulationCreator.Individual[i].Genotype + "\r\n";
+                    iterationsPhonotypeCollections += i + " - Рестартов Н-М: " + PopulationCreator.Individual[i].SurvivalRate.NelMidRestarts + "\r\n";
                 }
 
-                FormAlgorithmCode.richTextBoxClassCode.Text = NewClass.Code;//FormateCodeText();
+                FormAlgorithmCode.richTextBoxClassCode.Text = PopulationCreator.Code;//FormateCodeText();
                 try
                 {
                     FormPhonotypeCollections.richTextPhenotypes.Text += iterationsPhonotypeCollections;
@@ -557,9 +554,9 @@ namespace WFA.KSAF
                 var getCrazy = false;
                 for (var i = 0; i < ArgumentsCount; i++)
                 {
-                    double outFy = NewClass.GraphPoints[i];
+                    double outFy = PopulationCreator.GraphPoints[i];
                     double outFx = checkBoxHaveDept.Checked 
-                        ? richTextBoxIncoming.Lines[i].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[0].ToDbl() 
+                        ? ConvertExt.ToDbl(richTextBoxIncoming.Lines[i].Split(new [] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)[0]) 
                         : Arguments[0, i];
 
                     if (Math.Abs(outFy) > Math.Abs(Arguments[1, i]) * 50.0 && Math.Abs(Arguments[1, i]) != 0)
@@ -572,7 +569,7 @@ namespace WFA.KSAF
                         f_x += Arguments[args, i] + "\t";
 
                     if (isNewGenotypeIsBetter)
-                        f_x += "F:" + Math.Round(NewClass.GraphPoints[i], 3) + "\r\n";
+                        f_x += "F:" + Math.Round(PopulationCreator.GraphPoints[i], 3) + "\r\n";
                 }
 
                 //Функция рехнулась (используем прошлый вариант).
@@ -585,7 +582,7 @@ namespace WFA.KSAF
 
                 if (isNewGenotypeIsBetter)
                 {
-                    _frozenPhenotype = NewClass.GetSimplify(newBestGenotype);
+                    _frozenPhenotype = PopulationCreator.GetSimplify(newBestGenotype);
                     for (var i = 0; i < ArgumentsRows; i++)
                         _frozenPhenotype = _frozenPhenotype.Replace("Arg[" + i + ",n]", ((char)(97 + i)).ToString());
                     
@@ -596,20 +593,20 @@ namespace WFA.KSAF
                     isNewGenotypeIsBetter = false;
                 }
 
-                DialogBog.Text = "Итерация № " + Iteration;
+                DialogBog.Text = @"Итерация № " + Iteration;
 
                 DialogBog.Label2.Text = BestFunc_Diviate < MaxDespers 
                     ? "Достигнуто преследуемое отклонение" 
                     : "Достигнуто заданное колличество итераций";
 
-                DialogBog.Label1.Text = "Текущее отклонение: " + BestFunc_Diviate;
+                DialogBog.Label1.Text = @"Текущее отклонение: " + BestFunc_Diviate;
                 DialogBog.Textbox1.Text = _frozenPhenotype;
                 var pause = false;
                 ElapsedTime += DateTime.Now - StartTime;
                 DialogBog.LabelElaps.Text = ElapsedTime.ToString();
                 double endLoop = Iteration.ToDbl() / textBoxIterationsCount.Text.ToDbl();
 
-                if (endLoop / Math.Truncate(endLoop) == 1)
+                if ((endLoop / Math.Truncate(endLoop) - 1).IsLessThanEpsilon())
                     pause = true;
 
                 if (BestFunc_Diviate < MaxDespers || pause)

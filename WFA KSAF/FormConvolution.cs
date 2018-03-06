@@ -38,7 +38,7 @@ namespace WFA.KSAF
                     double[] xy = new double[linesLenght];
                     //if (rtb != richTextBoxOperator) for (int n = 0; n < linesLenght; n++) xy[n] = MainForm.ConvertToDouble(parts[n]);
                     //else for (int n = linesLenght; n >=0 ; n--) xy[n] = MainForm.ConvertToDouble(parts[n]);
-                    for (int n = 0; n < linesLenght; n++) xy[n] = MainForm.ConvertToDouble(parts[n]);
+                    for (int n = 0; n < linesLenght; n++) xy[n] = parts[n].ToDblSlow();
                     list.Add(xy);
                 }
             }
@@ -222,7 +222,7 @@ namespace WFA.KSAF
             double start =  textBox5.Text.ToDbl();
             double finish = textBox3.Text.ToDbl();
             richTextBoxOperator.Text = finish.ToString();
-            double step =  MainForm.ConvertToDouble(textBox4.Text);
+            double step =  textBox4.Text.ToDblSlow();
             double[,] temp2 = MainForm.Evaluator(textBoxIncFunc.Text, start, finish, step);
             for (int i = 0; i < temp2.GetLength(1); i++)
             {
@@ -327,9 +327,9 @@ namespace WFA.KSAF
         {
             richTextBoxIncoming.Text = "";
             PointPairList list = new PointPairList();
-            double start = MainForm.ConvertToDouble(textBox5.Text);
-            double finish = MainForm.ConvertToDouble(textBox3.Text);
-            double step = MainForm.ConvertToDouble(textBox4.Text);
+            double start =  textBox5.Text.ToDblSlow();
+            double finish = textBox3.Text.ToDblSlow();
+            double step =   textBox4.Text.ToDblSlow();
             double[,] temp2 = MainForm.Evaluator(textBoxIncFunc.Text, start, finish, step);
             for (double i = start; i > finish; i -= step)
             {
