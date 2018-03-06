@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CL.KSAF", "CL.KSAF\CL.KSAF.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CL.Extensions", "..\..\TFS\Roing\CommonProjects\CL\CL.Extensions\CL.Extensions.csproj", "{DFD1DF41-9ABB-4B47-A1B4-EDE98ECCC74D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FE37E784-D94B-4C5F-81B7-3C7B8A5E6E73}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.txt = Readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
