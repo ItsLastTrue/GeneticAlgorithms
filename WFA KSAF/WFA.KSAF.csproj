@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props')" />
-  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.7.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.7.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -59,8 +59,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\..\..\..\Google Drive\Генетический алгоритм\V 6.10 GeneticАlgorithms Бесконечная\GeneticАlgorithms\bin\Debug\Mono.Cecil.dll</HintPath>
@@ -87,30 +90,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
-    <Compile Include="Entities\Child.cs" />
-    <Compile Include="Entities\Individual.cs" />
-    <Compile Include="Entities\Log.cs" />
-    <Compile Include="Creators\CreatePopulation.cs" />
-    <Compile Include="Designer.cs">
+    <Compile Include="Delegates\All.cs" />
+    <Compile Include="FormDesigner.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Designer.Designer.cs">
-      <DependentUpon>Designer.cs</DependentUpon>
+    <Compile Include="FormDesigner.Designer.cs">
+      <DependentUpon>FormDesigner.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entities\OptimizationResults.cs" />
-    <Compile Include="ExpressionParser\NodeChanger.cs" />
-    <Compile Include="Extensions\ConvertExt.cs" />
-    <Compile Include="Extensions\IntCounter.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Forms\FormDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormAlgorithmCode.cs">
+    <Compile Include="Forms\FormMainUi.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAlgorithmCode.Designer.cs">
+    <Compile Include="Forms\FormMainUi.Designer.cs">
+      <DependentUpon>FormMainUi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormAlgorithmCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormAlgorithmCode.Designer.cs">
       <DependentUpon>FormAlgorithmCode.cs</DependentUpon>
     </Compile>
     <Compile Include="FormConvolution.cs">
@@ -144,22 +143,15 @@
       <DependentUpon>FormTests.cs</DependentUpon>
     </Compile>
     <Compile Include="Generated\TestClass.BeforeCut.cs" />
+    <Compile Include="Generated\TestClass.cs" />
     <Compile Include="Generated\TestClass2.cs" />
     <Compile Include="Helpers\DecimalConverterHlp.cs" />
-    <Compile Include="Helpers\ParityHlp.cs" />
-    <Compile Include="Interfaces\ISelection.cs" />
-    <Compile Include="Optimization\SurvivalTester.cs" />
-    <Compile Include="Optimization\NeldorMid.cs" />
-    <Compile Include="ExpressionParser\TreeParser.cs" />
-    <Compile Include="ExpressionParser\TreeNode.cs" />
-    <Compile Include="ExpressionParser\MathTypes.cs" />
+    <Compile Include="DrawningGraphs\ZedGraphPainting.cs" />
+    <Compile Include="Helpers\ZedGraphHlp.cs" />
+    <Compile Include="SelectionLifeCycles\GraphPointsCycle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Creators\CsharpCompiler.cs" />
-    <Compile Include="Creators\RandomProvider.cs" />
-    <Compile Include="Creators\TEMP.SurvivalResults.cs" />
-    <Compile Include="Selections\MixSelection.cs" />
-    <Compile Include="Generated\TestClass.cs" />
+    <Compile Include="Generated\TestClass3.cs" />
     <Compile Include="Generated\TestClass - Копировать %282%29.cs" />
     <Compile Include="Generated\TestClass - Копировать.cs" />
     <Compile Include="Generated\TestClass.BeforeLINQ.cs" />
@@ -169,17 +161,14 @@
     <Compile Include="Forms\FormThreads.Designer.cs">
       <DependentUpon>FormThreads.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Designer.resx">
-      <DependentUpon>Designer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormAlgorithmCode.resx">
+    <EmbeddedResource Include="Forms\FormAlgorithmCode.resx">
       <DependentUpon>FormAlgorithmCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormConvolution.resx">
       <DependentUpon>FormConvolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDesigner.resx">
+      <DependentUpon>FormDesigner.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormErrors.resx">
       <DependentUpon>FormErrors.cs</DependentUpon>
@@ -189,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormPhonotypeCollections.resx">
       <DependentUpon>FormPhonotypeCollections.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMainUi.resx">
+      <DependentUpon>FormMainUi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormTests.resx">
       <DependentUpon>FormTests.cs</DependentUpon>
@@ -242,14 +234,18 @@
       <Project>{DFD1DF41-9ABB-4B47-A1B4-EDE98ECCC74D}</Project>
       <Name>CL.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CL.KSAF\CL.KSAF.csproj">
+      <Project>{14551296-02ec-4d3a-9229-1421256342ee}</Project>
+      <Name>CL.KSAF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.3.2\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.7.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.7.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

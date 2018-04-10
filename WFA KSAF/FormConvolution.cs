@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using WFA.KSAF;
-using WFA.KSAF.Extensions;
+using CL.KSAF.Extensions;
 using ZedGraph;
+using WFA.KSAF.Forms;
+using WFA.KSAF.Helpers;
 
 namespace WFA.KSAF
 {
     public partial class FormConvolution : Form
     {
-        private Form1 MainForm;
-        public FormConvolution(Form1 _Mainform)
+        private FormMainUi MainForm;
+        public FormConvolution(FormMainUi _Mainform)
         {
             InitializeComponent();
             MainForm = _Mainform;
@@ -104,7 +106,7 @@ namespace WFA.KSAF
                 string[] parts = rtb.Lines[i].Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
                 list.Add(parts[Fx_index - 1].ToDbl(), parts[0].ToDbl());
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, title, list, MainForm.GetRandColor());
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, title, list, ZedGraphHlp.RandomColor, MainForm.checkBoxHaveDept.Checked);
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -194,7 +196,7 @@ namespace WFA.KSAF
                         x++;
                         richTextBoxOperator.Text += y + " ";
                     }
-                    MainForm.DrawGraph(MainForm.zedGraphIterations, "", iterpoints, MainForm.GetRandColor());
+                    ZedGraphHlp.DrawGraph(MainForm.zedGraphIterations, "", iterpoints, ZedGraphHlp.RandomColor, MainForm.checkBoxHaveDept.Checked);
                     richTextBoxOperator.Text += "\r\n";
                 }
             }
@@ -213,7 +215,7 @@ namespace WFA.KSAF
                 list.Add(temp2[1, i], temp2[0, i]);
                 richTextBoxIncoming.Text += temp2[0, i] + "\t" + temp2[1, i] + "\r\n";
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Функция для свертки", list, MainForm.GetRandColor());
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Функция для свертки", list, ZedGraphHlp.RandomColor, MainForm.checkBoxHaveDept.Checked);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -229,7 +231,7 @@ namespace WFA.KSAF
                 list.Add(temp2[1, i], temp2[0, i]);
                 richTextBoxOperator.Text += temp2[0, i] + "\t" + temp2[1, i] + "\r\n";
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Оператор свертки", list, MainForm.GetRandColor());
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Оператор свертки", list, ZedGraphHlp.RandomColor, MainForm.checkBoxHaveDept.Checked);
         }
 
         private void FormConvolution_Load(object sender, EventArgs e)
@@ -277,7 +279,7 @@ namespace WFA.KSAF
                 MainForm.richTextBoxIncoming.Text += tempConv[0] + "   \t" + GetArgumentFromList(i, 1, ListIncoming) + "    \t" + Math.Round(tempConv[1], 4) + "\r\n";
                 richTextBoxConvolution.Text += tempConv[0] + "   \t" + Math.Round(tempConv[1], 4) + "\r\n";
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Рекурсивный фильтр", list, Color.Red);
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Рекурсивный фильтр", list, Color.Red, MainForm.checkBoxHaveDept.Checked);
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -320,7 +322,7 @@ namespace WFA.KSAF
                 MainForm.richTextBoxIncoming.Text += tempConv[0] + "   \t" + GetArgumentFromList(i, 1, ListIncoming) + "    \t" + Math.Round(tempConv[1], 4) + "\r\n";
                 richTextBoxConvolution.Text += tempConv[0] + "   \t" + Math.Round(tempConv[1], 4) + "\r\n";
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Цифровой фильтр", list, Color.Pink);
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Цифровой фильтр", list, Color.Pink, MainForm.checkBoxHaveDept.Checked);
         }
         Random rnd = new Random();
         private void button7_Click(object sender, EventArgs e)
@@ -339,7 +341,8 @@ namespace WFA.KSAF
                 list.Add(temp[1], temp[0]);
                 richTextBoxIncoming.Text += temp[0] + "\t" + temp[1] + "\r\n";
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Функция для свертки", list, Color.Green);
+
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Функция для свертки", list, Color.Green, MainForm.checkBoxHaveDept.Checked);
         }
     }
 }

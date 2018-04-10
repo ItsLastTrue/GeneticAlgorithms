@@ -5,14 +5,16 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using WFA.KSAF.Extensions;
+using CL.KSAF.Extensions;
 using ZedGraph;
+using WFA.KSAF.Forms;
+using WFA.KSAF.Helpers;
 
 namespace WFA.KSAF
 {
     public partial class FormOpenFile : Form
     {
-        private Form1 MainForm;
+        private FormMainUi MainForm;
         StreamReader InStream;
         private int RowsCount;
         private Regex mRegLine = new Regex(@"[-+][0-9]+(?:\.[0-9]*)?");
@@ -20,7 +22,7 @@ namespace WFA.KSAF
         List<string> CollectionsPointPairListNames = new List<string>();
         int LasFileCounts = 0;
 
-        public FormOpenFile(Form1 _Mainform)
+        public FormOpenFile(FormMainUi _Mainform)
         {
             InitializeComponent();
             MainForm = _Mainform;
@@ -298,7 +300,8 @@ namespace WFA.KSAF
                 MainForm.richTextBoxIncoming.Text += dataGridView1[0, i].Value + " " + dataGridView1[y, i].Value + enter;
                 list.Add((dataGridView1[y, i].Value).ToDblSlow(),(dataGridView1[0, i].Value).ToDblSlow());
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue);
+
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue, MainForm.checkBoxHaveDept.Checked);
         }
         private void GetCurveToMane()
         {
@@ -331,10 +334,11 @@ namespace WFA.KSAF
                 MainForm.richTextBoxIncoming.Text += dataGridView2[0, i].Value + " " + dataGridView2[1, i].Value + " " + dataGridView2[2, i].Value + enter;
                 list.Add(dataGridView2[2, i].Value.ToDblSlow(), dataGridView2[0, i].Value.ToDblSlow());
             }
-            MainForm.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue);
+
+            ZedGraphHlp.DrawGraph(MainForm.ZedGraphResult, "Из Las файла", list, Color.Blue, MainForm.checkBoxHaveDept.Checked);
             label1.Visible = false;
             progressBar1.Visible = false;
-            this.Close();
+            Close();
         }
 
         private void GetFunctionParameters(int y, bool IfArgument)

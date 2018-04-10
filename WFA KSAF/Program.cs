@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using WFA.KSAF.Forms;
 
 namespace WFA.KSAF
 {
@@ -13,7 +14,7 @@ namespace WFA.KSAF
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new FormMainUi());
         }
     }
 }

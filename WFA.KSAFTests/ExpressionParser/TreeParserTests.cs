@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WFA.KSAF.ExpressionParser;
+using CL.KSAF.ExpressionParser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WFA.KSAF.ExpressionParser.Tests
+namespace CL.KSAF.ExpressionParser.Tests
 {
     [TestClass]
     public class TreeParserTests
